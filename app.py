@@ -23,6 +23,7 @@ class Items(Resource):
         return fakeDatabase
 
 class Item(Resource):
+
     def get(self, pk):
         return fakeDatabase[pk]
 
@@ -31,8 +32,12 @@ class Item(Resource):
         fakeDatabase[pk]['name'] = data['name']
         return fakeDatabase
 
+    def delete(self, pk):
+        del fakeDatabase[pk]
+        return fakeDatabase
+
 api.add_resource(Items, '/')
-api.add_resource(Item, '/<int:data>')
+api.add_resource(Item, '/<int:pk>')
 
 if __name__ == '__main__':
     app.run(debug=True)
