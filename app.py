@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 from flask_restful import Resource, Api
 
 # Instancing Flask + API
@@ -12,15 +12,27 @@ fakeDatabase = {
     3:{'name':'Start stream'},
 }
 
-class Stats(Resource):
+class Items(Resource):
     def get(self):
         return fakeDatabase
-class Stat(Resource):
-    def get(self, data):
-        return fakeDatabase[data]
 
-api.add_resource(Stats, '/')
-api.add_resource(Stat, '/<int:data>')
+    def post(self):
+        data = request.json
+        item_id = len(fakeDatabase.keys()) + 1
+        fakeDatabase[item_id] = {'name':data['name']}
+        return fakeDatabase
+
+class Item(Resource):
+    def get(self, pk):
+        return fakeDatabase[pk]
+
+    def put(self, pk):
+        data = request.json
+        fakeDatabase[pk]['name'] = data['name']
+        return fakeDatabase
+
+api.add_resource(Items, '/')
+api.add_resource(Item, '/<int:data>')
 
 if __name__ == '__main__':
     app.run(debug=True)
